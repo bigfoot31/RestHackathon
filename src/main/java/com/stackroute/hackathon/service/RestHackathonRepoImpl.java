@@ -25,9 +25,8 @@ public class RestHackathonRepoImpl implements RestHackathonService {
 	}
 
 	@Override
-	public UserModel readById(String Id) {
-		// TODO Auto-generated method stub
-		return null;
+	public UserModel readById(String userId) {
+		return this.repoObject.findOne(userId);
 	}
 
 	@Override
@@ -45,6 +44,16 @@ public class RestHackathonRepoImpl implements RestHackathonService {
 	public boolean delete(UserModel deleteData) {
 		if(repoObject.findOne(deleteData.getId()) != null) {
 			this.repoObject.delete(deleteData.getId());
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean deleteById(String userId) {
+		if(repoObject.findOne(userId) != null) {
+			this.repoObject.delete(userId);
 			return true;
 		} else {
 			return false;

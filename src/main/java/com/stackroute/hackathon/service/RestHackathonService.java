@@ -10,4 +10,5 @@ interface RestHackathonService {
 	UserModel readById(String Id);
 	boolean update(UserModel updateData);
 	boolean delete(UserModel deleteData);
+	boolean deleteById(String userId);
 }

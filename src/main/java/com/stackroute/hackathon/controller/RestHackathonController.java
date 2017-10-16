@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +29,11 @@ public class RestHackathonController {
 	@GetMapping(produces="application/json")
 	public ResponseEntity<List<UserModel>> getJson() {
 		return new ResponseEntity<List<UserModel>>(this._Service.read(), HttpStatus.OK);
+	}
+	
+	@GetMapping(value="/{id}" ,produces="application/json")
+	public ResponseEntity<UserModel> getJsonById(@PathVariable("id") String userId) {
+		return new ResponseEntity<UserModel>(this._Service.readById(userId), HttpStatus.OK);
 	}
 	
 	//Post Request
@@ -52,7 +58,7 @@ public class RestHackathonController {
 		}
 	}
 	
-	//DELETE Request davandra
+	//DELETE 
 	@DeleteMapping(consumes="application/json")
 	public ResponseEntity<String> deleteJson(RequestEntity<List<UserModel>> deleteListData) {
 		
@@ -66,4 +72,18 @@ public class RestHackathonController {
 		
 		return new ResponseEntity<String>("Data deleted.", HttpStatus.OK);
 	}
+	
+	//DELETE 
+		@DeleteMapping("/{id}")
+		public ResponseEntity<String> deleteJsonById(@PathVariable("id") String userId) {
+			
+				boolean isDeleted = this._Service.deleteById(userId);
+				
+				if(!isDeleted) {
+					return new ResponseEntity<String>("Data does not exist", HttpStatus.BAD_REQUEST);
+				}
+				else
+			
+			return new ResponseEntity<String>("Data deleted.", HttpStatus.OK);
+		}
 }
