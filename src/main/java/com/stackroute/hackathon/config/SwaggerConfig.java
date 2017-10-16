@@ -17,7 +17,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.stackroute.hackathon.controller"))
-                .paths(PathSelectors.regex("/hackathon.*"))
+                .paths(PathSelectors.regex("/v1.0/hackathon.*"))
                 .build();
     }
 }

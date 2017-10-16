@@ -9,60 +9,87 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.stackroute.hackathon.exception.UserAlreadyExistsException;
+import com.stackroute.hackathon.exception.UserNotFoundException;
 import com.stackroute.hackathon.model.UserModel;
 import com.stackroute.hackathon.service.RestHackathonRepoImpl;
 
+
 @RestController
-@RequestMapping("/hackathon/user")
+@RequestMapping("/v1.0/hackathon")
 @CrossOrigin(origins = "*")
 public class RestHackathonController {
 	@Autowired
 	private RestHackathonRepoImpl _Service;
 	
 	//Get Request
-	@GetMapping(produces="application/json")
+	@GetMapping(value="/user",produces="application/json")
 	public ResponseEntity<List<UserModel>> getJson() {
 		return new ResponseEntity<List<UserModel>>(this._Service.read(), HttpStatus.OK);
 	}
 	
-	//Post Request
-	@PostMapping(consumes="application/json")
-	public ResponseEntity<String> postJson(RequestEntity<UserModel> newListData) {
-		System.out.println("uo");
-			this._Service.create(newListData.getBody());
+	@GetMapping(value="/user/{id}" ,produces="application/json")
+	public ResponseEntity getJsonById(@PathVariable("id") String userId) {
 		
-		return new ResponseEntity<String>("Data saved successfully", HttpStatus.CREATED);
+		try {
+			UserModel user = this._Service.readById(userId);
+			return new ResponseEntity<UserModel>(user, HttpStatus.OK);
+		} catch (UserNotFoundException exp) {
+			return new ResponseEntity<String>(exp.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+		
+	}
+	
+	@PostMapping(value="/user",consumes="application/json")
+	public ResponseEntity<String> postJson(RequestEntity<UserModel> newData) {
+		try {
+			if((newData.getBody().getUsername()==null)||(newData.getBody().getEmailid()==null)) {
+				return new ResponseEntity<String>("Username or EmailId cannot be EMPTY", HttpStatus.PARTIAL_CONTENT);
+			}else {
+			this._Service.addUser(newData.getBody());
+			return new ResponseEntity<String>("User Added Successfully", HttpStatus.CREATED);
+			}
+		} catch (UserAlreadyExistsException exp) {
+			return new ResponseEntity<String>(exp.getMessage(), HttpStatus.CONFLICT);
+
+		}
 	}
 	
 	//PUT Request
-	@PutMapping(consumes="application/json")
+	@PutMapping(value="/user",consumes="application/json")
 	public ResponseEntity<String> putJson(RequestEntity<UserModel> updateData) {
-		boolean isUpdate = this._Service.update(updateData.getBody());
-		
-		if(isUpdate) {
-			return new ResponseEntity<String>("Data saved successfully", HttpStatus.CREATED);
-		} else {
-			return new ResponseEntity<String>("Data not found.", HttpStatus.BAD_REQUEST);
+		try {
+			this._Service.update(updateData.getBody());
+			return new ResponseEntity<String>(" User Updated Successfully", HttpStatus.OK);
+		} catch (UserNotFoundException exp) {
+			return new ResponseEntity<String>(exp.getMessage(), HttpStatus.BAD_REQUEST);
+
 		}
 	}
 	
-	//DELETE Request davandra
-	@DeleteMapping(consumes="application/json")
-	public ResponseEntity<String> deleteJson(RequestEntity<List<UserModel>> deleteListData) {
-		
-		for( UserModel g:deleteListData.getBody()) {
-			boolean isDeleted = this._Service.delete(g);
+	
+	//DELETE 
+	@DeleteMapping("/user/{id}")
+	public ResponseEntity<String> deleteJsonById(@PathVariable("id") String userId) {
 			
-			if(!isDeleted) {
-				return new ResponseEntity<String>("Data does not exist", HttpStatus.BAD_REQUEST);
+			try {
+				this._Service.deleteById(userId);
+				return new ResponseEntity<String>("User with Id "+userId+" Deleted Succesfully ", HttpStatus.OK);
+			} catch (UserNotFoundException exp) {
+				return new ResponseEntity<String>(exp.getMessage(), HttpStatus.BAD_REQUEST);
 			}
-		}
-		
-		return new ResponseEntity<String>("Data deleted.", HttpStatus.OK);
+	}
+	
+	/******************* Default Request Mapping *****************************/
+
+	@RequestMapping()
+	public ResponseEntity<String> defaultMap() {
+		return new ResponseEntity<String>("Request Not Found, Please Enter Proper Url", HttpStatus.NOT_FOUND);
 	}
 }
