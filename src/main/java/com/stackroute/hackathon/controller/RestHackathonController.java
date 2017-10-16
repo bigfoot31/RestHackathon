@@ -32,10 +32,9 @@ public class RestHackathonController {
 	
 	//Post Request
 	@PostMapping(consumes="application/json")
-	public ResponseEntity<String> postJson(RequestEntity<List<UserModel>> newListData) {
-		for(UserModel g: newListData.getBody()) {
-			this._Service.create(g);
-		}
+	public ResponseEntity<String> postJson(RequestEntity<UserModel> newListData) {
+		System.out.println("uo");
+			this._Service.create(newListData.getBody());
 		
 		return new ResponseEntity<String>("Data saved successfully", HttpStatus.CREATED);
 	}
