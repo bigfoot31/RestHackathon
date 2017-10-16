@@ -19,11 +19,6 @@ public class RestHackathonRepoImpl implements RestHackathonService {
 	private RestHackathonCRUDRepository repoObject;
 
 	@Override
-	public void create(UserModel newData) {
-		this.repoObject.save(newData);
-	}
-
-	@Override
 	public List<UserModel> read() {
 		return (List<UserModel>) this.repoObject.findAll();
 	}
@@ -48,24 +43,12 @@ public class RestHackathonRepoImpl implements RestHackathonService {
 	}
 
 	@Override
-	public boolean delete(UserModel deleteData) {
-		if(repoObject.findOne(deleteData.getId()) != null) {
-			this.repoObject.delete(deleteData.getId());
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-
-	@Override
 	public void addUser(UserModel user) throws UserAlreadyExistsException {
 		if (repoObject.exists(user.getId())) {
 			throw new UserAlreadyExistsException("Article with Id " + user.getId() + " already exist");
 		} else {
 			repoObject.save(user);
 		}
-		
 	}
 
 

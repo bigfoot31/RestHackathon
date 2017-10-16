@@ -46,16 +46,6 @@ public class RestHackathonController {
 		
 	}
 	
-	//Post Request
-//	@PostMapping(consumes="application/json")
-//	public ResponseEntity<String> postJson(RequestEntity<List<UserModel>> newListData) {
-//		for(UserModel g: newListData.getBody()) {
-//			this._Service.create(g);
-//		}
-//		
-//		return new ResponseEntity<String>("Data saved successfully", HttpStatus.CREATED);
-//	}
-	
 	@PostMapping(value="/user",consumes="application/json")
 	public ResponseEntity<String> postJson(RequestEntity<UserModel> newData) {
 		try {
@@ -83,37 +73,23 @@ public class RestHackathonController {
 		}
 	}
 	
-	//DELETE 
-	@DeleteMapping(value="/user",consumes="application/json")
-	public ResponseEntity<String> deleteByPassingIdInJson(RequestEntity<List<UserModel>> deleteListData) {
-		
-		for( UserModel g:deleteListData.getBody()) {
-			boolean isDeleted = this._Service.delete(g);
-			
-			if(!isDeleted) {
-				return new ResponseEntity<String>("Data does not exist", HttpStatus.BAD_REQUEST);
-			}
-		}
-		
-		return new ResponseEntity<String>("Data deleted.", HttpStatus.OK);
-	}
 	
 	//DELETE 
-		@DeleteMapping("/user/{id}")
-		public ResponseEntity<String> deleteJsonById(@PathVariable("id") String userId) {
-				
-				try {
-					this._Service.deleteById(userId);
-					return new ResponseEntity<String>("User with Id "+userId+" Deleted Succesfully ", HttpStatus.OK);
-				} catch (UserNotFoundException exp) {
-					return new ResponseEntity<String>(exp.getMessage(), HttpStatus.BAD_REQUEST);
-				}
-		}
-		
-		/******************* Default Request Mapping *****************************/
+	@DeleteMapping("/user/{id}")
+	public ResponseEntity<String> deleteJsonById(@PathVariable("id") String userId) {
+			
+			try {
+				this._Service.deleteById(userId);
+				return new ResponseEntity<String>("User with Id "+userId+" Deleted Succesfully ", HttpStatus.OK);
+			} catch (UserNotFoundException exp) {
+				return new ResponseEntity<String>(exp.getMessage(), HttpStatus.BAD_REQUEST);
+			}
+	}
+	
+	/******************* Default Request Mapping *****************************/
 
-		@RequestMapping()
-		public ResponseEntity<String> defaultMap() {
-			return new ResponseEntity<String>("Request Not Found, Please Enter Proper Url", HttpStatus.NOT_FOUND);
-		}
+	@RequestMapping()
+	public ResponseEntity<String> defaultMap() {
+		return new ResponseEntity<String>("Request Not Found, Please Enter Proper Url", HttpStatus.NOT_FOUND);
+	}
 }
