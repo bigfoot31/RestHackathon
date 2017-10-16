@@ -18,9 +18,9 @@ import com.stackroute.hackathon.model.UserModel;
 import com.stackroute.hackathon.service.RestHackathonRepoImpl;
 
 @RestController
-@RequestMapping("/hackathon")
+@RequestMapping("/hackathon/user")
 @CrossOrigin(origins = "*")
-public class GoPlacesController {
+public class RestHackathonController {
 	@Autowired
 	private RestHackathonRepoImpl _Service;
 	
@@ -33,7 +33,6 @@ public class GoPlacesController {
 	//Post Request
 	@PostMapping(consumes="application/json")
 	public ResponseEntity<String> postJson(RequestEntity<List<UserModel>> newListData) {
-		System.out.println("I am here");
 		for(UserModel g: newListData.getBody()) {
 			this._Service.create(g);
 		}
