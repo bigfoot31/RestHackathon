@@ -53,7 +53,7 @@ public class GoPlacesController {
 		}
 	}
 	
-	//DELETE Request
+	//DELETE Request davandra
 	@DeleteMapping(consumes="application/json")
 	public ResponseEntity<String> deleteJson(RequestEntity<List<UserModel>> deleteListData) {
 		
