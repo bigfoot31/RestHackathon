@@ -59,8 +59,12 @@ public class RestHackathonController {
 	@PostMapping(value="/user",consumes="application/json")
 	public ResponseEntity<String> postJson(RequestEntity<UserModel> newData) {
 		try {
+			if((newData.getBody().getUsername()==null)||(newData.getBody().getEmailid()==null)) {
+				return new ResponseEntity<String>("Username or EmailId cannot be EMPTY", HttpStatus.PARTIAL_CONTENT);
+			}else {
 			this._Service.addUser(newData.getBody());
 			return new ResponseEntity<String>("User Added Successfully", HttpStatus.CREATED);
+			}
 		} catch (UserAlreadyExistsException exp) {
 			return new ResponseEntity<String>(exp.getMessage(), HttpStatus.CONFLICT);
 
