@@ -5,8 +5,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.stackroute.hackathon.exception.UserAlreadyExistsException;
+import com.stackroute.hackathon.exception.UserNotFoundException;
 import com.stackroute.hackathon.model.UserModel;
 import com.stackroute.hackathon.repository.RestHackathonCRUDRepository;
+
+
 
 @Service
 public class RestHackathonRepoImpl implements RestHackathonService {
@@ -25,18 +29,21 @@ public class RestHackathonRepoImpl implements RestHackathonService {
 	}
 
 	@Override
-	public UserModel readById(String userId) {
-		return this.repoObject.findOne(userId);
+	public UserModel readById(String userId) throws UserNotFoundException {
+		if (repoObject.exists(userId)) {
+			return repoObject.findOne(userId);
+		} else {
+			throw new UserNotFoundException("Article with Id " + userId + " does not exist");
+		}
 	}
 
 	@Override
-	public boolean update(UserModel updateData) {
-		if(repoObject.findOne(updateData.getId()) != null) {
-			this.repoObject.delete(updateData.getId());
-			this.repoObject.save(updateData);
-			return true;
+	public void update(UserModel updateData) throws UserNotFoundException {
+		
+		if (repoObject.exists(updateData.getId())) {
+			repoObject.save(updateData);
 		} else {
-			return false;
+			throw new UserNotFoundException("Article with Id " + updateData.getId() + " does not exist");
 		}
 	}
 
@@ -50,13 +57,25 @@ public class RestHackathonRepoImpl implements RestHackathonService {
 		}
 	}
 
+
 	@Override
-	public boolean deleteById(String userId) {
-		if(repoObject.findOne(userId) != null) {
-			this.repoObject.delete(userId);
-			return true;
+	public void addUser(UserModel user) throws UserAlreadyExistsException {
+		if (repoObject.exists(user.getId())) {
+			throw new UserAlreadyExistsException("Article with Id " + user.getId() + " already exist");
 		} else {
-			return false;
+			repoObject.save(user);
 		}
+		
+	}
+
+
+	@Override
+	public void deleteById(String userId) throws UserNotFoundException {
+		if (repoObject.exists(userId)) {
+			repoObject.delete(userId);
+		} else {
+			throw new UserNotFoundException("Article with Id " + userId + " does not exist");
+		}
+		
 	}
 }
