@@ -1,7 +1,6 @@
 package com.stackroute.hackathon.service;
 
-import java.util.List;
-
+import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +18,8 @@ public class RestHackathonRepoImpl implements RestHackathonService {
 	private RestHackathonCRUDRepository repoObject;
 
 	@Override
-	public List<UserModel> read() {
-		return (List<UserModel>) this.repoObject.findAll();
+	public ArrayList<UserModel> read() {
+		return (ArrayList<UserModel>) this.repoObject.findAll();
 	}
 
 	@Override
@@ -28,7 +27,7 @@ public class RestHackathonRepoImpl implements RestHackathonService {
 		if (repoObject.exists(userId)) {
 			return repoObject.findOne(userId);
 		} else {
-			throw new UserNotFoundException("Article with Id " + userId + " does not exist");
+			throw new UserNotFoundException("User with Id " + userId + " does not exist");
 		}
 	}
 
@@ -38,14 +37,14 @@ public class RestHackathonRepoImpl implements RestHackathonService {
 		if (repoObject.exists(updateData.getId())) {
 			repoObject.save(updateData);
 		} else {
-			throw new UserNotFoundException("Article with Id " + updateData.getId() + " does not exist");
+			throw new UserNotFoundException("User with Id " + updateData.getId() + " does not exist");
 		}
 	}
 
 	@Override
 	public void addUser(UserModel user) throws UserAlreadyExistsException {
 		if (repoObject.exists(user.getId())) {
-			throw new UserAlreadyExistsException("Article with Id " + user.getId() + " already exist");
+			throw new UserAlreadyExistsException("User with Id " + user.getId() + " already exist");
 		} else {
 			repoObject.save(user);
 		}
@@ -57,7 +56,7 @@ public class RestHackathonRepoImpl implements RestHackathonService {
 		if (repoObject.exists(userId)) {
 			repoObject.delete(userId);
 		} else {
-			throw new UserNotFoundException("Article with Id " + userId + " does not exist");
+			throw new UserNotFoundException("User with Id " + userId + " does not exist");
 		}
 		
 	}

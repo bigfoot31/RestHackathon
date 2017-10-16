@@ -11,8 +11,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -99,7 +97,7 @@ public class RestHackathonControllerTest {
 	public void testReadMethodOfService() throws Exception {
 		UserModel b = new UserModel("1", "Devendra", "devendra.baruah@cgi.com");
 		UserModel c=new UserModel("2", "Dharmendra", "devendra.baruah@cgi.com");
-		List<UserModel> userList = new ArrayList<UserModel>();
+		ArrayList<UserModel> userList = new ArrayList<UserModel>();
 		userList.add(b);
 		userList.add(c);
 		
